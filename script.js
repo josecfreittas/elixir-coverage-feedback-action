@@ -60,6 +60,29 @@ ${coverageTable}
 </details>
 `;
 
+const async maybeCreateOrUpdateComment({owner, repo, issueNumber, commentData}) => {
+  if (!issueNumber) {
+    return;
+  }
+
+  const newComment = buildComment(commentData);
+
+  const comments = await github.issues.listComments({ owner, repo, issue_number: issueNumber });
+  const comment = comments.data.find(comment => comment.body.includes('### Tests summary'));
+
+  if (comment) {
+    await github.issues.updateComment({ owner, repo, comment_id: comment.id, body: newComment });
+    return;
+  }
+
+  await github.rest.issues.createComment({
+    issue_number: issueNumber,
+    body: newComment,
+    owner,
+    repo,
+  });
+}
+
 module.exports = async ({ core, github, context, coverageTool, coverageThreshold }) => {
   const fs = require("fs");
 
@@ -70,21 +93,17 @@ module.exports = async ({ core, github, context, coverageTool, coverageThreshold
   const coverageSuccess = data.totalCoverage >= coverageThreshold;
   const testsSuccess = data.totalFailures === 0;
 
-  const comment = buildComment({
-    ...data,
-    coverageThreshold,
-    coverageSuccess,
-    testsSuccess,
+  await maybeCreateOrUpdateComment({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    issueNumber: context.issue.number,
+    commentData: {
+      ...data,
+      coverageThreshold,
+      coverageSuccess,
+      testsSuccess,
+    }
   });
-
-  if (context.issue.number) {
-    await github.rest.issues.createComment({
-      issue_number: context.issue.number,
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-      body: comment,
-    });
-  }
 
   if (!testsSuccess) {
     core.setFailed(`Tests failed.`);
