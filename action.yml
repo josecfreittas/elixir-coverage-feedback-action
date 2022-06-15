@@ -1,4 +1,4 @@
-name: "Elixir coverage feedback"
+name: "Elixir Coverage"
 description: "Action to run tests, check coverage, and send a feedback message to the pull request."
 
 branding:
