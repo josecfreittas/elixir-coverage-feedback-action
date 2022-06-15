@@ -60,7 +60,7 @@ ${coverageTable}
 </details>
 `;
 
-const async maybeCreateOrUpdateComment({owner, repo, issueNumber, commentData}) => {
+const maybeCreateOrUpdateComment = async ({owner, repo, issueNumber, commentData}) => {
   if (!issueNumber) {
     return;
   }
