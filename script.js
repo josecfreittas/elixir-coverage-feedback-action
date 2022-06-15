@@ -67,11 +67,11 @@ const maybeCreateOrUpdateComment = async ({github, owner, repo, issueNumber, com
 
   const newComment = buildComment(commentData);
 
-  const comments = await github.issues.listComments({ owner, repo, issue_number: issueNumber });
+  const comments = await github.rest.issues.listComments({ owner, repo, issue_number: issueNumber });
   const comment = comments.data.find(comment => comment.body.includes('### Tests summary'));
 
   if (comment) {
-    await github.issues.updateComment({ owner, repo, comment_id: comment.id, body: newComment });
+    await github.rest.issues.updateComment({ owner, repo, comment_id: comment.id, body: newComment });
     return;
   }
 
