@@ -60,7 +60,7 @@ ${coverageTable}
 </details>
 `;
 
-const maybeCreateOrUpdateComment = async ({owner, repo, issueNumber, commentData}) => {
+const maybeCreateOrUpdateComment = async ({github, owner, repo, issueNumber, commentData}) => {
   if (!issueNumber) {
     return;
   }
@@ -94,8 +94,9 @@ module.exports = async ({ core, github, context, coverageTool, coverageThreshold
   const testsSuccess = data.totalFailures === 0;
 
   await maybeCreateOrUpdateComment({
-    owner: context.repo.owner,
+    github,
     repo: context.repo.repo,
+    owner: context.repo.owner,
     issueNumber: context.issue.number,
     commentData: {
       ...data,
