@@ -42,7 +42,7 @@ jobs:
           mix credo --strict
           mix compile --warnings-as-errors
       - name: Tests and coverage
-        uses: josecfreittas/elixir-coverage-feedback-action@v0.1
+        uses: josecfreittas/elixir-coverage-feedback-action@v0.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           coverage_threshold: 80
