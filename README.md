@@ -30,10 +30,10 @@ jobs:
           POSTGRES_PASSWORD: mycoolpassword
     steps:
       - uses: actions/checkout@v2
-      - uses: erlef/setup-elixir@885971a72ed1f9240973bd92ab57af8c1aa68f24
+      - uses: erlef/setup-beam@v1.11.2
         with:
-          elixir-version: "1.13.1"
-          otp-version: "24.1.7"
+          elixir-version: "1.13.4"
+          otp-version: "25.0.3"
       - name: Get dependencies
         run: mix deps.get
       - name: Code analyzers
