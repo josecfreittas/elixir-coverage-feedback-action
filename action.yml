@@ -21,22 +21,39 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
     - name: Tests and coverage
       id: tests
       shell: bash
       run: if mix test --cover 2>&1 | tee coverage_report.log; then echo 'success running the tests'; fi
+    - name: Install npm dependencies
+      shell: bash
+      run: npm install @actions/cache
     - name: Feedback comment
       uses: actions/github-script@v6.1.0
       with:
         github-token: ${{ inputs.github_token }}
         script: |
-          const actionPath = '${{ github.action_path }}';
-          const coverageTool = '${{ inputs.coverage_tool }}'.toLowerCase();
+          const actionPath = "${{ github.action_path }}";
+          const coverageTool = "${{ inputs.coverage_tool }}".toLowerCase();
+
+          const defaultBranch = "${{ github.event.repository.default_branch }}";
+          const currentBranch = "${{ steps.extract_branch.outputs.branch }}";
+          const runId = "${{ github.run_id }}";
+
+          const githubCache = require("@actions/cache");
 
           const script = require(`${actionPath}/script.js`);
           await script({
             core,
             github,
+            runId,
+            defaultBranch,
+            currentBranch,
+            githubCache,
             context,
             coverageTool,
             coverageThreshold: ${{ inputs.coverage_threshold }},

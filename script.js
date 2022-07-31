@@ -1,3 +1,6 @@
+const fs = require("fs");
+const coverageCacheDir = "elixir-coverage-feedback-action";
+
 const parsers = {
   default: (output) => {
     const pattern =
@@ -31,6 +34,16 @@ const parsers = {
 
 const statusEmoji = (result) => (result ? ":white_check_mark:" : ":x:");
 
+const coverageDiff = ({ runId, previousCoverage }, currentCoverage, defaultBranch, repoUrl) => {
+  if (!previousCoverage) return "";
+
+  const valueDiff = currentCoverage - previousCoverage;
+  const diffEmoji = previousCoverage == currentCoverage ? ":ok:" : previousCoverage < currentCoverage ? ":arrow_up:" : ":arrow_down:";
+  const diffLabel = valueDiff == 0 ? "remained the same" : valueDiff > 0 ? `increased (${valueDiff.toFixed(2)}%)` : `decreased (${valueDiff.toFixed(2)}%)`;
+
+  return `${diffEmoji} **Overall coverage ${diffLabel} compared to the \`${defaultBranch}\` branch ([${previousCoverage}%]${repoUrl}/runs/${runId}))**`;
+};
+
 const buildComment = ({
   summary,
   randomizedSeed,
@@ -39,6 +52,9 @@ const buildComment = ({
   totalFailures,
   coverageSuccess,
   totalCoverage,
+  defaultBranch,
+  repoUrl,
+  previousCoverage,
   coverageThreshold,
   coverageTable,
 }) => `
@@ -49,6 +65,7 @@ ${randomizedSeed}
 
 ${statusEmoji(testsSuccess)} **${totalTests} tests, ${totalFailures} failures**
 ${statusEmoji(coverageSuccess)} **${totalCoverage}% coverage (${coverageThreshold}% is the minimum)**
+${coverageDiff(previousCoverage, totalCoverage, defaultBranch, repoUrl)}
 
 <details>
 <summary>Coverage details</summary>
@@ -60,7 +77,7 @@ ${coverageTable}
 </details>
 `;
 
-const maybeCreateOrUpdateComment = async ({github, owner, repo, issueNumber, commentData}) => {
+const maybeCreateOrUpdateComment = async ({ github, owner, repo, issueNumber, commentData }) => {
   if (!issueNumber) {
     return;
   }
@@ -81,11 +98,40 @@ const maybeCreateOrUpdateComment = async ({github, owner, repo, issueNumber, com
     owner,
     repo,
   });
-}
+};
 
-module.exports = async ({ core, github, context, coverageTool, coverageThreshold }) => {
-  const fs = require("fs");
+const retrievePreviousCoverage = async (defaultBranch, currentBranch, githubCache) => {
+  if (defaultBranch === currentBranch) return;
 
+  let previousCoverage;
+
+  try {
+    await githubCache.restoreCache([coverageCacheDir], coverageCacheDir);
+    previousCoverage = JSON.parse(fs.readFileSync(`./${coverageCacheDir}/coverage`, "utf8"));
+    console.log(`Previous coverage:`);
+    console.log(previousCoverage);
+  } catch { }
+
+  return previousCoverage;
+};
+
+const saveCurrentCoverage = async (defaultBranch, currentBranch, github, owner, repo, githubCache, totalCoverage, runId) => {
+  if (defaultBranch !== currentBranch) return;
+
+  try {
+    await github.rest.actions.deleteActionsCacheByKey({ owner, repo, coverageCacheDir });
+
+    if (!fs.existsSync(`./${coverageCacheDir}`)) fs.mkdirSync(`./${coverageCacheDir}`);
+    fs.writeFileSync(`./${coverageCacheDir}/coverage`, JSON.stringify({ runId, coverage: totalCoverage }));
+
+    await githubCache.saveCache([coverageCacheDir], coverageCacheDir);
+  } catch (error) { console.error(error) }
+};
+
+module.exports = async ({ core, github, runId, defaultBranch, currentBranch, githubCache, context, coverageTool, coverageThreshold }) => {
+
+  const owner = context.repo.owner;
+  const repo = context.repo.repo;
   const output = fs.readFileSync("./coverage_report.log", { encoding: "utf8", flag: "r" });
   const outputParser = parsers[coverageTool] || parsers.default;
   const data = outputParser(output);
@@ -93,13 +139,19 @@ module.exports = async ({ core, github, context, coverageTool, coverageThreshold
   const coverageSuccess = data.totalCoverage >= coverageThreshold;
   const testsSuccess = data.totalFailures === 0;
 
+  const previousCoverage = await retrievePreviousCoverage(defaultBranch, currentBranch, githubCache);
+  await saveCurrentCoverage(defaultBranch, currentBranch, github, owner, repo, githubCache, data.totalCoverage, runId);
+
   await maybeCreateOrUpdateComment({
     github,
-    repo: context.repo.repo,
-    owner: context.repo.owner,
+    repo,
+    owner,
     issueNumber: context.issue.number,
     commentData: {
       ...data,
+      defaultBranch,
+      repoUrl: `https://github.com/${repo}/${repo}`,
+      previousCoverage,
       coverageThreshold,
       coverageSuccess,
       testsSuccess,
@@ -110,6 +162,7 @@ module.exports = async ({ core, github, context, coverageTool, coverageThreshold
     core.setFailed(`Tests failed.`);
     return;
   }
+
 
   if (!coverageSuccess) {
     core.setFailed(`Minimum coverage not reached.`);
