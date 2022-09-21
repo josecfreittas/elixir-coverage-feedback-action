@@ -6,13 +6,16 @@ By default, this action assumes that you are using the Elixir's default coverage
 
 ![image](https://user-images.githubusercontent.com/10376340/173872693-bf42c8b4-92c8-4332-840a-e935fb8cb836.png)
 
-## Usage example
+## Example of a complete test workflow using the action
 
 `.github/workflows/test.yml`
 
 ```yaml
 on:
   pull_request:
+  push:
+    branches:
+      - main
 
 jobs:
   test:
@@ -29,11 +32,19 @@ jobs:
           POSTGRES_USER: project
           POSTGRES_PASSWORD: mycoolpassword
     steps:
-      - uses: actions/checkout@v2
-      - uses: erlef/setup-beam@v1.11.2
+      - uses: actions/checkout@v3
+      - uses: erlef/setup-beam@v1.13.1
         with:
-          elixir-version: "1.13.4"
-          otp-version: "25.0.3"
+          elixir-version: "1.14.0"
+          otp-version: "25.0.4"
+      - name: Mix and build cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-
       - name: Get dependencies
         run: mix deps.get
       - name: Code analyzers
@@ -41,7 +52,7 @@ jobs:
           mix format --check-formatted
           mix credo --strict
           mix compile --warnings-as-errors
-      - name: Tests and coverage
+      - name: Tests & Coverage
         uses: josecfreittas/elixir-coverage-feedback-action@v0.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
