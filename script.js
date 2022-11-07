@@ -1,7 +1,7 @@
 const parsers = {
   default: (output) => {
     const pattern =
-      /(.+?)(?=Finished)(.+sync\))(\n[0-9]+ test[s]?, )([0-9]+ failure[s]?)(.+)(Randomized with seed [0-9]+)(.+)(Percentage \| Module.+)( [0-9]+\.[0-9]+%)( \| Total)/gs;
+      /(.+?)(?=Finished)(.+sync\))\n(?:\d+ \w+, )*([0-9]+ test[s]?, )([0-9]+ failure[s]?)(.+)(Randomized with seed [0-9]+)(.+)(Percentage \| Module.+)( [0-9]+\.[0-9]+%)( \| Total)/gs;
     const groups = pattern.exec(output);
 
     return {
@@ -15,7 +15,7 @@ const parsers = {
   },
   excoveralls: (output) => {
     const pattern =
-      /(.+?)(?=Finished)(.+sync\))(\n[0-9]+ test[s]?, )([0-9]+ failure[s]?)(.+)(Randomized with seed [0-9]+)(.+)(\[TOTAL\][ ]+)([0-9]+\.[0-9]+%)(.+)/gs;
+      /(.+?)(?=Finished)(.+sync\))\n(?:\d+ \w+, )*([0-9]+ test[s]?, )([0-9]+ failure[s]?)(.+)(Randomized with seed [0-9]+)(.+)(\[TOTAL\][ ]+)([0-9]+\.[0-9]+%)(.+)/gs;
     const groups = pattern.exec(output);
 
     return {
@@ -60,7 +60,7 @@ ${coverageTable}
 </details>
 `;
 
-const maybeCreateOrUpdateComment = async ({github, owner, repo, issueNumber, commentData}) => {
+const maybeCreateOrUpdateComment = async ({ github, owner, repo, issueNumber, commentData }) => {
   if (!issueNumber) {
     return;
   }
