@@ -25,7 +25,7 @@ jobs:
       MIX_ENV: test
     services:
       db:
-        image: postgres:14-alpine
+        image: postgres:15-alpine
         ports: ["5432:5432"]
         env:
           POSTGRES_DB: project_test
@@ -35,8 +35,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: erlef/setup-beam@v1.13.1
         with:
-          elixir-version: "1.14.0"
-          otp-version: "25.0.4"
+          elixir-version: "1.14.1"
+          otp-version: "25.1.2"
       - name: Mix and build cache
         uses: actions/cache@v3
         with:

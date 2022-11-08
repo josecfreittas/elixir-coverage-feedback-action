@@ -1,30 +1,32 @@
 const parsers = {
   default: (output) => {
     const pattern =
-      /(.+?)(?=Finished)(.+sync\))\n(?:\d+ \w+, )*([0-9]+ test[s]?, )([0-9]+ failure[s]?)(.+)(Randomized with seed [0-9]+)(.+)(Percentage \| Module.+)( [0-9]+\.[0-9]+%)( \| Total)/gs;
+      /(.+?)(?=Finished)(.+sync\))\n([0-9]+ doctest[s]?, )?([0-9]+ test[s]?, )([0-9]+ failure[s]?)(.+)(Randomized with seed [0-9]+)(.+)(Percentage \| Module.+)( [0-9]+\.[0-9]+%)( \| Total)/gs;
     const groups = pattern.exec(output);
 
     return {
       summary: groups[2],
-      totalTests: parseInt(groups[3]),
-      totalFailures: parseInt(groups[4]),
-      totalCoverage: parseFloat(groups[9]),
-      randomizedSeed: groups[6],
-      coverageTable: groups[8] + groups[9] + groups[10],
+      docTests: parseInt(groups[3]),
+      totalTests: parseInt(groups[4]),
+      totalFailures: parseInt(groups[5]),
+      totalCoverage: parseFloat(groups[10]),
+      randomizedSeed: groups[7],
+      coverageTable: groups[9] + groups[10] + groups[11],
     };
   },
   excoveralls: (output) => {
     const pattern =
-      /(.+?)(?=Finished)(.+sync\))\n(?:\d+ \w+, )*([0-9]+ test[s]?, )([0-9]+ failure[s]?)(.+)(Randomized with seed [0-9]+)(.+)(\[TOTAL\][ ]+)([0-9]+\.[0-9]+%)(.+)/gs;
+      /(.+?)(?=Finished)(.+sync\))\n([0-9]+ doctest[s]?, )?([0-9]+ test[s]?, )([0-9]+ failure[s]?)(.+)(Randomized with seed [0-9]+)(.+)(\[TOTAL\][ ]+)([0-9]+\.[0-9]+%)(.+)/gs;
     const groups = pattern.exec(output);
 
     return {
       summary: groups[2],
-      totalTests: parseInt(groups[3]),
-      totalFailures: parseInt(groups[4]),
-      totalCoverage: parseFloat(groups[9]),
-      randomizedSeed: groups[6],
-      coverageTable: groups[7] + groups[8] + groups[9] + groups[10],
+      docTests: parseInt(groups[3]),
+      totalTests: parseInt(groups[4]),
+      totalFailures: parseInt(groups[5]),
+      totalCoverage: parseFloat(groups[10]),
+      randomizedSeed: groups[7],
+      coverageTable: groups[8] + groups[9] + groups[10] + groups[11],
     };
   },
 };
@@ -35,6 +37,7 @@ const buildComment = ({
   summary,
   randomizedSeed,
   testsSuccess,
+  docTests,
   totalTests,
   totalFailures,
   coverageSuccess,
@@ -47,7 +50,7 @@ const buildComment = ({
 ${summary}
 ${randomizedSeed}
 
-${statusEmoji(testsSuccess)} **${totalTests} tests, ${totalFailures} failures**
+${statusEmoji(testsSuccess)} **${docTests || 0} doctests, ${totalTests} tests, ${totalFailures} failures**
 ${statusEmoji(coverageSuccess)} **${totalCoverage}% coverage (${coverageThreshold}% is the minimum)**
 
 <details>
