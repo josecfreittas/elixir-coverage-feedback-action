@@ -4,7 +4,9 @@ This action gets the output of `mix test --cover`, treats it, and creates a feed
 
 By default, this action assumes that you are using the Elixir's default coverage tool. But it also supports [ExCoveralls](https://github.com/parroty/excoveralls), and if you preferes it, just add the `coverage_tool` configuration inside the `with` option specifying it.
 
-![image](https://user-images.githubusercontent.com/10376340/173872693-bf42c8b4-92c8-4332-840a-e935fb8cb836.png)
+![image](https://user-images.githubusercontent.com/10376340/200857131-94cb2147-d703-4965-be5c-6cd6521826da.png#gh-light-mode-only)
+![image](https://user-images.githubusercontent.com/10376340/200857627-8232b1de-fcbe-4b68-9f30-df2b89b61ccf.png#gh-dark-mode-only)
+
 
 ## Example of a complete test workflow using the action
 
@@ -23,6 +25,7 @@ jobs:
     name: Tests & Checks
     env:
       MIX_ENV: test
+
     services:
       db:
         image: postgres:15-alpine
@@ -31,12 +34,16 @@ jobs:
           POSTGRES_DB: project_test
           POSTGRES_USER: project
           POSTGRES_PASSWORD: mycoolpassword
+
     steps:
       - uses: actions/checkout@v3
-      - uses: erlef/setup-beam@v1.13.1
+
+      - name: Setup Erlang and Elixir
+        uses: erlef/setup-beam@v1.13.1
         with:
           elixir-version: "1.14.1"
           otp-version: "25.1.2"
+
       - name: Mix and build cache
         uses: actions/cache@v3
         with:
@@ -45,13 +52,15 @@ jobs:
             _build
           key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
           restore-keys: ${{ runner.os }}-mix-
+
       - name: Get dependencies
         run: mix deps.get
+
       - name: Code analyzers
         run: |
           mix format --check-formatted
-          mix credo --strict
           mix compile --warnings-as-errors
+
       - name: Tests & Coverage
         uses: josecfreittas/elixir-coverage-feedback-action@v0.3
         with:
