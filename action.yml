@@ -32,10 +32,12 @@ runs:
         script: |
           const actionPath = '${{ github.action_path }}';
           const coverageTool = '${{ inputs.coverage_tool }}'.toLowerCase();
+          const actor = '${{ github.actor }}';
 
           const script = require(`${actionPath}/script.js`);
           await script({
             core,
+            actor,
             github,
             context,
             coverageTool,
