@@ -64,10 +64,6 @@ ${coverageTable}
 `;
 
 const maybeCreateOrUpdateComment = async ({ github, owner, repo, issueNumber, commentData }) => {
-  if (!issueNumber) {
-    return;
-  }
-
   const newComment = buildComment(commentData);
 
   const comments = await github.rest.issues.listComments({ owner, repo, issue_number: issueNumber });
@@ -86,7 +82,7 @@ const maybeCreateOrUpdateComment = async ({ github, owner, repo, issueNumber, co
   });
 }
 
-module.exports = async ({ core, github, context, coverageTool, coverageThreshold }) => {
+module.exports = async ({ core, actor, github, context, coverageTool, coverageThreshold }) => {
   const fs = require("fs");
 
   const output = fs.readFileSync("./coverage_report.log", { encoding: "utf8", flag: "r" });
@@ -96,18 +92,22 @@ module.exports = async ({ core, github, context, coverageTool, coverageThreshold
   const coverageSuccess = data.totalCoverage >= coverageThreshold;
   const testsSuccess = data.totalFailures === 0;
 
-  await maybeCreateOrUpdateComment({
-    github,
-    repo: context.repo.repo,
-    owner: context.repo.owner,
-    issueNumber: context.issue.number,
-    commentData: {
-      ...data,
-      coverageThreshold,
-      coverageSuccess,
-      testsSuccess,
-    }
-  });
+  const issueNumber = context.issue.number;
+
+  if (actor !== 'dependabot[bot]' && issueNumber) {
+    await maybeCreateOrUpdateComment({
+      github,
+      issueNumber,
+      repo: context.repo.repo,
+      owner: context.repo.owner,
+      commentData: {
+        ...data,
+        coverageThreshold,
+        coverageSuccess,
+        testsSuccess,
+      }
+    });
+  }
 
   if (!testsSuccess) {
     core.setFailed(`Tests failed.`);
