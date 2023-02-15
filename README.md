@@ -2,7 +2,7 @@
 
 This action gets the output of `mix test --cover`, treats it, and creates a feedback message in the pull request of origin. It also checks if the coverage reaches the minimum configured in the action, and exits with an error if it doesn't.
 
-By default, this action assumes that you are using the Elixir's default coverage tool. But it also supports [ExCoveralls](https://github.com/parroty/excoveralls), and if you preferes it, just add the `coverage_tool` configuration inside the `with` option specifying it.
+By default, this action assumes that you are using Elixir's default coverage tool. However, it also supports [ExCoveralls](https://github.com/parroty/excoveralls), and if you prefer it, simply add the `coverage_tool` configuration inside the `with` option that specifies it.
 
 ![image](https://user-images.githubusercontent.com/10376340/200857131-94cb2147-d703-4965-be5c-6cd6521826da.png#gh-light-mode-only)
 ![image](https://user-images.githubusercontent.com/10376340/200857627-8232b1de-fcbe-4b68-9f30-df2b89b61ccf.png#gh-dark-mode-only)
