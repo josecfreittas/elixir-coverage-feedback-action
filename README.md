@@ -4,6 +4,8 @@ This action gets the output of `mix test --cover`, treats it, and creates a feed
 
 By default, this action assumes that you are using Elixir's default coverage tool. However, it also supports [ExCoveralls](https://github.com/parroty/excoveralls), and if you prefer it, simply add the `coverage_tool` configuration inside the `with` option that specifies it.
 
+Additionally, this action supports setting a `working_directory` in the with configuration if your Elixir project is not at the root of the repository.
+
 ![image](https://user-images.githubusercontent.com/10376340/200857131-94cb2147-d703-4965-be5c-6cd6521826da.png#gh-light-mode-only)
 ![image](https://user-images.githubusercontent.com/10376340/200857627-8232b1de-fcbe-4b68-9f30-df2b89b61ccf.png#gh-dark-mode-only)
 
@@ -66,5 +68,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           coverage_threshold: 80
+          # working_directory: ./your_project_directory
           # coverage_tool: excoveralls
 ```
