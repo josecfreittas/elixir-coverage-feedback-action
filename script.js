@@ -82,8 +82,10 @@ const maybeCreateOrUpdateComment = async ({ github, owner, repo, issueNumber, co
   });
 }
 
-module.exports = async ({ core, actor, github, context, coverageTool, coverageThreshold }) => {
+module.exports = async ({ core, actor, github, context, coverageTool, coverageThreshold, workingDirectory }) => {
   const fs = require("fs");
+
+  process.chdir(workingDirectory);
 
   const output = fs.readFileSync("./coverage_report.log", { encoding: "utf8", flag: "r" });
   const outputParser = parsers[coverageTool] || parsers.default;
