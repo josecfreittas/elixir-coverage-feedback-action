@@ -34,7 +34,7 @@ runs:
         if mix test --cover 2>&1 | tee coverage_report.log; then echo 'success running the tests'; fi
 
     - name: Feedback comment
-      uses: actions/github-script@v6.1.0
+      uses: actions/github-script@v6.4.1
       with:
         github-token: ${{ inputs.github_token }}
         script: |
