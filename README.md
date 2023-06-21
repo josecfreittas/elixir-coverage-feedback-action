@@ -64,7 +64,7 @@ jobs:
           mix compile --warnings-as-errors
 
       - name: Tests & Coverage
-        uses: josecfreittas/elixir-coverage-feedback-action@v0.4
+        uses: josecfreittas/elixir-coverage-feedback-action@v0.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           coverage_threshold: 80

@@ -53,7 +53,7 @@ const buildComment = ({
 ${summary}
 ${randomizedSeed}
 
-${statusEmoji(testsSuccess)} **${featureTests || 0} features, ${docTests || 0} doctests, ${totalTests} tests, ${totalFailures} failures**
+${statusEmoji(testsSuccess)} **${featureTests || 0} feature tests, ${docTests || 0} doctests, ${totalTests} tests, ${totalFailures} failures**
 ${statusEmoji(coverageSuccess)} **${totalCoverage}% coverage (${coverageThreshold}% is the minimum)**
 
 <details>
