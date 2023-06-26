@@ -1,0 +1,33 @@
+......................................
+Finished in 0.06 seconds (0.03s async, 0.03s sync)
+2 features, 38 tests, 0 failures
+
+Randomized with seed 188301
+
+Generating cover results ...
+
+Percentage | Module
+-----------|--------------------------
+    25.00% | Fixture.DataCase
+    50.00% | Fixture.Repo
+    75.00% | Fixture.Application
+    80.00% | FixtureWeb.Telemetry
+   100.00% | Fixture
+   100.00% | Fixture.Lists
+   100.00% | Fixture.Math
+   100.00% | Fixture.Strings
+   100.00% | FixtureWeb
+   100.00% | FixtureWeb.ConnCase
+   100.00% | FixtureWeb.Endpoint
+   100.00% | FixtureWeb.ErrorJSON
+   100.00% | FixtureWeb.IndexController
+   100.00% | FixtureWeb.Router
+-----------|--------------------------
+    80.43% | Total
+
+Coverage test failed, threshold not met:
+
+    Coverage:   80.43%
+    Threshold:  90.00%
+
+Generated HTML coverage results in "cover" directory
