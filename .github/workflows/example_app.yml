@@ -1,0 +1,50 @@
+name: Example Elixir App CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Tests & Checks
+    defaults:
+      run:
+        working-directory: ./tests/example_app
+    env:
+      MIX_ENV: test
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Erlang and Elixir
+        uses: erlef/setup-beam@v1.16
+        with:
+          elixir-version: "1.15.0-otp-26"
+          otp-version: "26.0"
+
+      - name: Mix and build cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./tests/example_app/deps
+            ./tests/example_app/_build
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: ${{ runner.os }}-mix-
+
+      - name: Get dependencies
+        run: mix deps.get
+
+      - name: Code analyzers
+        run: |
+          mix format --check-formatted
+          mix compile --warnings-as-errors
+
+      - name: Tests & Coverage
+        uses: ./
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          coverage_threshold: 90
+          working_directory: ./tests/example_app
