@@ -42,7 +42,7 @@ runs:
           const coverageTool = '${{ inputs.coverage_tool }}'.toLowerCase();
           const actor = '${{ github.actor }}';
 
-          const script = require(`${actionPath}/script.js`);
+          const script = require(`${actionPath}/main.js`);
           await script({
             core,
             actor,
