@@ -23,8 +23,11 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
     name: Tests & Checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     env:
       MIX_ENV: test
 
