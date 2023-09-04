@@ -6,7 +6,7 @@
   "devDependencies": {
     "jest": "^29.6.4",
     "@actions/github": "^5.1.1",
-    "glob": "^10.3.3",
+    "glob": "^10.3.4",
     "jest-fetch-mock": "^3.0.3"
   }
 }
