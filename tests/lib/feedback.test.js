@@ -23,6 +23,7 @@ describe('feedback.js', () => {
         summary: 'Finished in 0.05 seconds (0.03s async, 0.02s sync)',
         randomizedSeed: 1234,
         testsSuccess: true,
+        propertyTests: 5,
         featureTests: 20,
         docTests: 10,
         totalTests: 30,
@@ -39,7 +40,7 @@ describe('feedback.js', () => {
         'Finished in 0.05 seconds (0.03s async, 0.02s sync)\n' +
         '1234\n' +
         '\n' +
-        ':white_check_mark: **20 feature tests, 10 doctests, 30 tests, 0 failures**\n' +
+        ':white_check_mark: **5 property tests, 20 feature tests, 10 doctests, 30 tests, 0 failures**\n' +
         ':white_check_mark: **100% coverage (90% is the minimum)**\n' +
         '\n' +
         '<details>\n' +
@@ -59,6 +60,7 @@ describe('feedback.js', () => {
         summary: 'Finished in 0.05 seconds (0.03s async, 0.02s sync)',
         randomizedSeed: 4321,
         testsSuccess: false,
+        propertyTests: 5,
         featureTests: 20,
         docTests: 10,
         totalTests: 30,
@@ -75,7 +77,7 @@ describe('feedback.js', () => {
         'Finished in 0.05 seconds (0.03s async, 0.02s sync)\n' +
         '4321\n' +
         '\n' +
-        ':x: **20 feature tests, 10 doctests, 30 tests, 5 failures**\n' +
+        ':x: **5 property tests, 20 feature tests, 10 doctests, 30 tests, 5 failures**\n' +
         ':x: **80% coverage (90% is the minimum)**\n' +
         '\n' +
         '<details>\n' +

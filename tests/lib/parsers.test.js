@@ -9,6 +9,7 @@ describe('parsers tests', () => {
     const output = parsers.default(fixture, 80);
 
     const expected = {
+      propertyTests: 0,
       featureTests: 2,
       docTests: 0,
       totalTests: 38,
@@ -46,6 +47,7 @@ describe('parsers tests', () => {
     const output = parsers.excoveralls(fixture, 80);
 
     const expected = {
+      propertyTests: 0,
       featureTests: 0,
       docTests: 1,
       totalTests: 38,
@@ -91,6 +93,7 @@ describe('parsers tests', () => {
 
       const seedFormat = /^Randomized with seed [0-9]+$/;
       expect(output.randomizedSeed).toMatch(seedFormat);
+      expect(Number.isInteger(output.propertyTests)).toBe(true);
       expect(Number.isInteger(output.featureTests)).toBe(true);
       expect(Number.isInteger(output.docTests)).toBe(true);
       expect(Number.isInteger(output.totalTests)).toBe(true);
