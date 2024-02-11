@@ -41,16 +41,16 @@ jobs:
           POSTGRES_PASSWORD: mycoolpassword
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Erlang and Elixir
-        uses: erlef/setup-beam@v1.15.4
+        uses: erlef/setup-beam@v1.17
         with:
-          elixir-version: "1.14.5-otp-26"
+          elixir-version: "1.16.0-otp-26"
           otp-version: "26.0"
 
       - name: Mix and build cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             deps
@@ -67,7 +67,7 @@ jobs:
           mix compile --warnings-as-errors
 
       - name: Tests & Coverage
-        uses: josecfreittas/elixir-coverage-feedback-action@v0.5
+        uses: josecfreittas/elixir-coverage-feedback-action@v0.6
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           coverage_threshold: 80
