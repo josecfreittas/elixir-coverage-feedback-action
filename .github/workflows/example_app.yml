@@ -20,16 +20,16 @@ jobs:
       MIX_ENV: test
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Erlang and Elixir
-        uses: erlef/setup-beam@v1.16
+        uses: erlef/setup-beam@v1.17
         with:
-          elixir-version: "1.15.0-otp-26"
+          elixir-version: "1.16.0-otp-26"
           otp-version: "26.0"
 
       - name: Mix and build cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ./tests/example_app/deps
