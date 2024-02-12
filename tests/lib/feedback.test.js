@@ -22,11 +22,9 @@ describe('feedback.js', () => {
       const commentData = {
         summary: 'Finished in 0.05 seconds (0.03s async, 0.02s sync)',
         randomizedSeed: 1234,
-        testsSuccess: true,
-        featureTests: 20,
-        docTests: 10,
-        totalTests: 30,
+        tests: '5 property tests, 20 feature tests, 10 doctests, 30 tests',
         totalFailures: 0,
+        testsSuccess: true,
         coverageSuccess: true,
         totalCoverage: 100,
         coverageThreshold: 90,
@@ -39,7 +37,7 @@ describe('feedback.js', () => {
         'Finished in 0.05 seconds (0.03s async, 0.02s sync)\n' +
         '1234\n' +
         '\n' +
-        ':white_check_mark: **20 feature tests, 10 doctests, 30 tests, 0 failures**\n' +
+        ':white_check_mark: **0 failures** (5 property tests, 20 feature tests, 10 doctests, 30 tests)\n' +
         ':white_check_mark: **100% coverage (90% is the minimum)**\n' +
         '\n' +
         '<details>\n' +
@@ -58,15 +56,13 @@ describe('feedback.js', () => {
       const commentData = {
         summary: 'Finished in 0.05 seconds (0.03s async, 0.02s sync)',
         randomizedSeed: 4321,
+        tests: '5 property tests, 20 feature tests, 10 doctests, 30 tests',
+        totalFailures: 7,
         testsSuccess: false,
-        featureTests: 20,
-        docTests: 10,
-        totalTests: 30,
-        totalFailures: 5,
         coverageSuccess: false,
         totalCoverage: 80,
         coverageThreshold: 90,
-        coverageTable: 'Coverage data for failure',
+        coverageTable: 'Some coverage data',
       };
   
       const expectedComment =
@@ -75,14 +71,14 @@ describe('feedback.js', () => {
         'Finished in 0.05 seconds (0.03s async, 0.02s sync)\n' +
         '4321\n' +
         '\n' +
-        ':x: **20 feature tests, 10 doctests, 30 tests, 5 failures**\n' +
+        ':x: **7 failures** (5 property tests, 20 feature tests, 10 doctests, 30 tests)\n' +
         ':x: **80% coverage (90% is the minimum)**\n' +
         '\n' +
         '<details>\n' +
         '<summary>Coverage details</summary>\n' +
         '\n' +
         '```\n' +
-        'Coverage data for failure\n' +
+        'Some coverage data\n' +
         '```\n' +
         '\n' +
         '</details>\n';

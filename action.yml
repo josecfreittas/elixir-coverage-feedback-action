@@ -9,10 +9,6 @@ inputs:
   github_token:
     description: "GitHub token"
     required: true
-  coverage_tool:
-    description: "Coverage tool"
-    default: "default"
-    required: false
   coverage_threshold:
     description: "Coverage threshold"
     default: 90
@@ -39,7 +35,6 @@ runs:
         github-token: ${{ inputs.github_token }}
         script: |
           const actionPath = '${{ github.action_path }}';
-          const coverageTool = '${{ inputs.coverage_tool }}'.toLowerCase();
           const actor = '${{ github.actor }}';
 
           const script = require(`${actionPath}/main.js`);
@@ -48,7 +43,6 @@ runs:
             actor,
             github,
             context,
-            coverageTool,
             coverageThreshold: ${{ inputs.coverage_threshold }},
             workingDirectory: '${{ inputs.working_directory }}',
           });

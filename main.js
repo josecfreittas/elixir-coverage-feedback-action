@@ -1,17 +1,16 @@
 const { readFileSync } = require('fs');
-const parsers = require('./lib/parsers');
+const parser = require('./lib/parser');
 const { maybeCreateOrUpdateComment } = require('./lib/feedback')
 
-const parsedData = (coverageTool, coverageThreshold) => {
+const parsedData = (coverageThreshold) => {
   const output = readFileSync('./coverage_report.log', { encoding: 'utf8', flag: 'r' });
-  const outputParser = parsers[coverageTool] || parsers;
-  return outputParser(output, coverageThreshold);
+  return parser(output, coverageThreshold);
 };
 
-module.exports = async ({ core, actor, github, context, coverageTool, coverageThreshold, workingDirectory }) => {
+module.exports = async ({ core, actor, github, context, coverageThreshold, workingDirectory }) => {
   process.chdir(workingDirectory);
 
-  const result = parsedData(coverageTool, coverageThreshold);
+  const result = parsedData(coverageThreshold);
   if (result === 'Error parsing coverage report') return core.setFailed(result)
 
   await maybeCreateOrUpdateComment({
