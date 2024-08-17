@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Tests & Checks
+    name: Tests & Checks (Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }})
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -19,14 +19,24 @@ jobs:
     env:
       MIX_ENV: test
 
+    strategy:
+      matrix:
+        include:
+          - elixir: '1.15.x'
+            otp: '25.x'
+          - elixir: '1.16.x'
+            otp: '26.x'
+          - elixir: '1.17.x'
+            otp: '27.x'
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Erlang and Elixir
-        uses: erlef/setup-beam@v1.17
+        uses: erlef/setup-beam@v1.18
         with:
-          elixir-version: "1.16.0-otp-26"
-          otp-version: "26.0"
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
 
       - name: Mix and build cache
         uses: actions/cache@v4
@@ -34,8 +44,9 @@ jobs:
           path: |
             ./tests/example_app/deps
             ./tests/example_app/_build
-          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-
+          key: ${{ runner.os }}-mix-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-${{ matrix.elixir }}-${{ matrix.otp }}-
 
       - name: Get dependencies
         run: mix deps.get

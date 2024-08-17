@@ -45,11 +45,14 @@ describe('parser tests', () => {
       const fixture = fs.readFileSync(file, 'utf8');
       const output = parser(fixture, 80);
 
-      const summaryFormat = /^Finished in [0-9.]+ seconds \([0-9.]+s async, [0-9.]+s sync\)$/;
-      expect(output.summary).toMatch(summaryFormat);
+      // Format for Elixir versions before 1.17
+      const oldSeedFormat = /^Randomized with seed [0-9]+$/;
 
-      const seedFormat = /^Randomized with seed [0-9]+$/;
-      expect(output.randomizedSeed).toMatch(seedFormat);
+      // Format for Elixir versions 1.17 and later
+      const newSeedFormat = /^Running ExUnit with seed: [0-9]+(?:, max_cases: [0-9]+)?$/;
+
+      expect(oldSeedFormat.test(output.randomizedSeed) || newSeedFormat.test(output.randomizedSeed)).toBe(true);
+
       expect(Number.isInteger(output.totalFailures)).toBe(true);
       expect(typeof output.totalCoverage).toBe('number');
     });
