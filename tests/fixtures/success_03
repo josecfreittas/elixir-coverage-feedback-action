@@ -1,0 +1,25 @@
+Running ExUnit with seed: 922031, max_cases: 8
+
+.......................................
+Finished in 0.1 seconds (0.07s async, 0.03s sync)
+1 doctest, 38 tests, 0 failures
+
+Generating cover results ...
+
+Percentage | Module
+-----------|--------------------------
+   100.00% | Example.Application
+   100.00% | Example.Lists
+   100.00% | Example.Math
+   100.00% | Example.Strings
+   100.00% | ExampleWeb
+   100.00% | ExampleWeb.ConnCase
+   100.00% | ExampleWeb.Endpoint
+   100.00% | ExampleWeb.ErrorJSON
+   100.00% | ExampleWeb.IndexController
+   100.00% | ExampleWeb.Router
+-----------|--------------------------
+   100.00% | Total
+
+Generated HTML coverage results in "cover" directory
+success running the tests
