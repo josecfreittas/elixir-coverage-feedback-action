@@ -1,15 +1,18 @@
 # Elixir coverage feedback comment
-
 This action gets the output of `mix test --cover`, treats it, and creates a feedback message in the pull request of origin. It also checks if the coverage reaches the minimum configured in the action, and exits with an error if it doesn't.
-
-Additionally, this action supports setting a `working_directory` as an input if your Elixir project is not at the root of the repository.
 
 ![image](https://user-images.githubusercontent.com/10376340/200857131-94cb2147-d703-4965-be5c-6cd6521826da.png#gh-light-mode-only)
 ![image](https://user-images.githubusercontent.com/10376340/200857627-8232b1de-fcbe-4b68-9f30-df2b89b61ccf.png#gh-dark-mode-only)
 
+## Inputs
+The action accepts the following inputs:
+
+- `github_token` (required): GitHub token to be able to create/edit comments on PRs.
+- `coverage_threshold` (optional): Coverage threshold percentage. Default is 90.
+- `working_directory` (optional): Working directory for the Elixir project. Default is the root directory (".").
+
 
 ## Example of a complete test workflow using the action
-
 `.github/workflows/test.yml`
 
 ```yaml
