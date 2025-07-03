@@ -1,0 +1,21 @@
+Getting extensions in current project...
+Running setup for AshPostgres.DataLayer...
+Cover compiling modules ...
+Running ExUnit with seed: 980561, max_cases: 20
+Excluding tags: [:e2e, :skip]
+
+.....
+Finished in 0.1 seconds (0.06s async, 0.09s sync)
+1 feature, 5 tests, 0 failures, 1 excluded
+Wrote JUnit report to: ./test-output/myapp-report_file_test.xml
+
+Generating cover results ...
+
+Percentage | Module
+-----------|--------------------------
+   100.00% | MyApp
+   100.00% | MyAppWeb.PageController
+-----------|--------------------------
+   100.00% | Total
+
+Generated HTML coverage results in "cover" directory
