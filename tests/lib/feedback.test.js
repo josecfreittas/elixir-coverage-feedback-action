@@ -1,22 +1,8 @@
+const assert = require('node:assert/strict');
+const { beforeEach, describe, it, mock } = require('node:test');
 const { buildComment, maybeCreateOrUpdateComment } = require('../../lib/feedback');
-const fetchMock = require('jest-fetch-mock');
-const { GitHub } = require('@actions/github');
-
-jest.mock('@actions/github', () => ({
-  GitHub: jest.fn().mockImplementation(() => ({
-    rest: {
-      issues: {
-        listComments: jest.fn(),
-        updateComment: jest.fn(),
-        createComment: jest.fn(),
-      },
-    },
-  })),
-}));
 
 describe('feedback.js', () => {
-  beforeEach(() => fetchMock.resetMocks());
-
   describe('buildComment', () => {
     it('should correctly format the comment', () => {
       const commentData = {
@@ -49,7 +35,7 @@ describe('feedback.js', () => {
         '\n' +
         '</details>\n';
 
-      expect(buildComment(commentData)).toEqual(expectedComment);
+      assert.equal(buildComment(commentData), expectedComment);
     });
 
     it('should correctly format the comment for failure scenario', () => {
@@ -83,7 +69,7 @@ describe('feedback.js', () => {
         '\n' +
         '</details>\n';
   
-      expect(buildComment(commentData)).toEqual(expectedComment);
+      assert.equal(buildComment(commentData), expectedComment);
     });
   });
 
@@ -92,7 +78,15 @@ describe('feedback.js', () => {
     let params;
 
     beforeEach(() => {
-      github = new GitHub();
+      github = {
+        rest: {
+          issues: {
+            listComments: mock.fn(),
+            updateComment: mock.fn(),
+            createComment: mock.fn(),
+          },
+        },
+      };
 
       params = {
         actor: 'not-dependabot',
@@ -105,37 +99,39 @@ describe('feedback.js', () => {
     });
 
     it('should call listComments and createComment if there is a new comment', async () => {
-      github.rest.issues.listComments.mockResolvedValueOnce({ data: [] });
+      github.rest.issues.listComments = mock.fn(async () => ({ data: [] }));
 
       await maybeCreateOrUpdateComment(params);
-      expect(github.rest.issues.listComments).toHaveBeenCalledTimes(1);
-      expect(github.rest.issues.createComment).toHaveBeenCalledTimes(1);
+      assert.equal(github.rest.issues.listComments.mock.callCount(), 1);
+      assert.equal(github.rest.issues.createComment.mock.callCount(), 1);
     });
 
     it('should call listComments and updateComment if the comment exists', async () => {
-      github.rest.issues.listComments.mockResolvedValueOnce({ data: [{ id: 1, body: '### Tests summary' }] });
+      github.rest.issues.listComments = mock.fn(async () => ({
+        data: [{ id: 1, body: '### Tests summary' }],
+      }));
 
       await maybeCreateOrUpdateComment(params);
-      expect(github.rest.issues.listComments).toHaveBeenCalledTimes(1);
-      expect(github.rest.issues.updateComment).toHaveBeenCalledTimes(1);
+      assert.equal(github.rest.issues.listComments.mock.callCount(), 1);
+      assert.equal(github.rest.issues.updateComment.mock.callCount(), 1);
     });
 
     it('should not call listComments, createComment, or updateComment if issueNumber is invalid', async () => {
       params.issueNumber = null;
 
       await maybeCreateOrUpdateComment(params);
-      expect(github.rest.issues.listComments).not.toHaveBeenCalled();
-      expect(github.rest.issues.createComment).not.toHaveBeenCalled();
-      expect(github.rest.issues.updateComment).not.toHaveBeenCalled();
+      assert.equal(github.rest.issues.listComments.mock.callCount(), 0);
+      assert.equal(github.rest.issues.createComment.mock.callCount(), 0);
+      assert.equal(github.rest.issues.updateComment.mock.callCount(), 0);
     });
 
     it('should not call listComments, createComment, or updateComment if actor is "dependabot[bot]"', async () => {
       params.actor = 'dependabot[bot]';
 
       await maybeCreateOrUpdateComment(params);
-      expect(github.rest.issues.listComments).not.toHaveBeenCalled();
-      expect(github.rest.issues.createComment).not.toHaveBeenCalled();
-      expect(github.rest.issues.updateComment).not.toHaveBeenCalled();
+      assert.equal(github.rest.issues.listComments.mock.callCount(), 0);
+      assert.equal(github.rest.issues.createComment.mock.callCount(), 0);
+      assert.equal(github.rest.issues.updateComment.mock.callCount(), 0);
     });
   });
 });

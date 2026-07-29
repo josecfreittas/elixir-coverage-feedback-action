@@ -42,16 +42,16 @@ jobs:
           POSTGRES_PASSWORD: mycoolpassword
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Erlang and Elixir
-        uses: erlef/setup-beam@v1.17
+        uses: erlef/setup-beam@v1.24.1
         with:
           elixir-version: "1.16.0-otp-26"
           otp-version: "26.0"
 
       - name: Mix and build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             deps
