@@ -1,0 +1,17 @@
+Cover compiling modules ...
+Running ExUnit with seed: 943482, max_cases: 12
+
+..
+Finished in 0.01 seconds (0.00s async, 0.01s sync)
+
+Result: 2 passed (1 doctest, 1 test)
+
+Generating cover results ...
+
+| Percentage | Module     |
+|------------|------------|
+|    100.00% | Project    |
+|------------|------------|
+|    100.00% | Total      |
+
+Generated HTML coverage results in "cover" directory

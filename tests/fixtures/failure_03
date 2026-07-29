@@ -1,0 +1,29 @@
+Cover compiling modules ...
+Running ExUnit with seed: 963385, max_cases: 12
+
+.
+
+  1) test greets the world (ProjectTest)
+     test/project_test.exs:5
+     Assertion with == failed
+     code:  assert Project.hello() == :wrong
+     left:  :world
+     right: :wrong
+     stacktrace:
+       test/project_test.exs:6: (test)
+
+
+Finished in 0.02 seconds (0.00s async, 0.02s sync)
+
+Result: 1/2 passed (1/1 doctest, 0/1 test)
+Failed: 1 test
+
+Generating cover results ...
+
+| Percentage | Module     |
+|------------|------------|
+|    100.00% | Project    |
+|------------|------------|
+|    100.00% | Total      |
+
+Generated HTML coverage results in "cover" directory
