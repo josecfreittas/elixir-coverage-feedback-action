@@ -60,6 +60,47 @@ describe('parser tests', () => {
     });
   });
 
+  [
+    {
+      fixture: 'success_05',
+      tests: '1 doctest, 1 test',
+      totalFailures: 0,
+    },
+    {
+      fixture: 'success_06',
+      tests: '2 passed (1 doctest, 1 test)',
+      totalFailures: 0,
+    },
+    {
+      fixture: 'failure_03',
+      tests: '1/2 passed (1/1 doctest, 0/1 test)',
+      totalFailures: 1,
+    },
+  ].forEach(({ fixture, tests, totalFailures }) => {
+    test(`parses ${fixture}`, () => {
+      const output = parser(
+        fs.readFileSync(path.join(__dirname, `../fixtures/${fixture}`), 'utf8'),
+        90
+      );
+
+      assert.equal(output.tests, tests);
+      assert.equal(output.totalFailures, totalFailures);
+      assert.equal(output.testsSuccess, totalFailures === 0);
+      assert.equal(output.totalCoverage, 100);
+      assert.equal(output.coverageSuccess, true);
+    });
+  });
+
+  test('derives Elixir 1.20 failures from the result fraction', () => {
+    const fixture = fs
+      .readFileSync(path.join(__dirname, '../fixtures/failure_03'), 'utf8')
+      .replace('Failed: 1 test\n', '');
+    const output = parser(fixture, 90);
+
+    assert.equal(output.totalFailures, 1);
+    assert.equal(output.testsSuccess, false);
+  });
+
   test('parses coverage report correctly for unusual cases', () => {
     const fixture = '== Compilation error in file test/fixture/math_test.exs ==\n' +
       '** (TokenMissingError) test/fixture/math_test.exs:65:1: missing terminator: end (for "do" starting at line 1)\n' +

@@ -4,6 +4,17 @@ This action gets the output of `mix test --cover`, treats it, and creates a feed
 ![image](https://user-images.githubusercontent.com/10376340/200857131-94cb2147-d703-4965-be5c-6cd6521826da.png#gh-light-mode-only)
 ![image](https://user-images.githubusercontent.com/10376340/200857627-8232b1de-fcbe-4b68-9f30-df2b89b61ccf.png#gh-dark-mode-only)
 
+## Tested versions
+
+The test matrix covers these Elixir and Erlang/OTP combinations:
+
+- Elixir 1.15 / OTP 25
+- Elixir 1.16 / OTP 26
+- Elixir 1.17 / OTP 27
+- Elixir 1.18 / OTP 27
+- Elixir 1.19 / OTP 28
+- Elixir 1.20 / OTP 29
+
 ## Inputs
 The action accepts the following inputs:
 
