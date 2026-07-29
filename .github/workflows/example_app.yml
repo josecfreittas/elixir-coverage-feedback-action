@@ -31,16 +31,16 @@ jobs:
             otp: '27.x'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Erlang and Elixir
-        uses: erlef/setup-beam@v1.18
+        uses: erlef/setup-beam@v1.24.1
         with:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}
 
       - name: Mix and build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ./tests/example_app/deps

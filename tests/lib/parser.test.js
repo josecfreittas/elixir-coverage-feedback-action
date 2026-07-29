@@ -1,6 +1,7 @@
+const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
-const glob = require('glob');
+const { describe, test } = require('node:test');
 const parser = require('../../lib/parser');
 
 describe('parser tests', () => {
@@ -36,12 +37,13 @@ describe('parser tests', () => {
         '    80.43% | Total'
     };
 
-    expect(output).toEqual(expected);
+    assert.deepEqual(output, expected);
   });
 
   test('parses coverage report correctly usual cases', () => {
-    const files = glob.sync(path.join(__dirname, '../fixtures/*'));
-    files.forEach(file => {
+    const fixturesDirectory = path.join(__dirname, '../fixtures');
+    fs.readdirSync(fixturesDirectory).forEach(filename => {
+      const file = path.join(fixturesDirectory, filename);
       const fixture = fs.readFileSync(file, 'utf8');
       const output = parser(fixture, 80);
 
@@ -51,10 +53,10 @@ describe('parser tests', () => {
       // Format for Elixir versions 1.17 and later
       const newSeedFormat = /^Running ExUnit with seed: [0-9]+(?:, max_cases: [0-9]+)?$/;
 
-      expect(oldSeedFormat.test(output.randomizedSeed) || newSeedFormat.test(output.randomizedSeed)).toBe(true);
+      assert.ok(oldSeedFormat.test(output.randomizedSeed) || newSeedFormat.test(output.randomizedSeed));
 
-      expect(Number.isInteger(output.totalFailures)).toBe(true);
-      expect(typeof output.totalCoverage).toBe('number');
+      assert.ok(Number.isInteger(output.totalFailures));
+      assert.equal(typeof output.totalCoverage, 'number');
     });
   });
 
@@ -69,6 +71,6 @@ describe('parser tests', () => {
 
     const output = parser(fixture);
 
-    expect(output).toEqual("Error parsing coverage report");
+    assert.equal(output, "Error parsing coverage report");
   });
 });
